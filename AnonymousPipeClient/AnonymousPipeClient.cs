@@ -36,7 +36,7 @@ namespace TestPipe
                 sw.Flush();
                 pipeClient.WaitForPipeDrain();
                 // Send the console input to the client process.
-                Console.Write("[CLIENT] Enter text 1: ");
+                Console.Write("[CLIENT] Enter text: ");
                 sw.WriteLine(Console.ReadLine());
             }
             catch (IOException e)

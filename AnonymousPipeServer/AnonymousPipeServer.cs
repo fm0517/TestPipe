@@ -67,7 +67,7 @@ namespace TestPipe
             AnonymousPipeServer anonymousPipeServer = new AnonymousPipeServer(PipeDirection.In);
 
             Process pipeClient = new Process();
-            pipeClient.StartInfo.FileName = "E:/test_code/TestPipe/AnonymousPipeClient/bin/Debug/net6.0/AnonymousPipeClient.exe";
+            pipeClient.StartInfo.FileName = "../../../../AnonymousPipeClient/bin/Debug/net6.0/AnonymousPipeClient.exe";
             // Pass the client process a handle to the server.
             pipeClient.StartInfo.Arguments = anonymousPipeServer.PipeServer.GetClientHandleAsString();
             pipeClient.StartInfo.UseShellExecute = false;
