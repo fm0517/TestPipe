@@ -7,6 +7,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AnonymousPipeServer", "Anon
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AnonymousPipeClient", "AnonymousPipeClient\AnonymousPipeClient.csproj", "{45A71D96-068B-4E73-8F0B-8A9D1DC9F04D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NamedPipeServer", "NamedPipeServer\NamedPipeServer.csproj", "{8A51CD9C-0217-4B22-AE68-8E1C0B22984D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NamedPipeClient", "NamedPipeClient\NamedPipeClient.csproj", "{C241BE0E-0E9A-490C-AC02-362EDB1EB5E8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +25,14 @@ Global
 		{45A71D96-068B-4E73-8F0B-8A9D1DC9F04D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{45A71D96-068B-4E73-8F0B-8A9D1DC9F04D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{45A71D96-068B-4E73-8F0B-8A9D1DC9F04D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8A51CD9C-0217-4B22-AE68-8E1C0B22984D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8A51CD9C-0217-4B22-AE68-8E1C0B22984D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8A51CD9C-0217-4B22-AE68-8E1C0B22984D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8A51CD9C-0217-4B22-AE68-8E1C0B22984D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C241BE0E-0E9A-490C-AC02-362EDB1EB5E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C241BE0E-0E9A-490C-AC02-362EDB1EB5E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C241BE0E-0E9A-490C-AC02-362EDB1EB5E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C241BE0E-0E9A-490C-AC02-362EDB1EB5E8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
