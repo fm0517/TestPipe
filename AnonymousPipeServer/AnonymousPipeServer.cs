@@ -8,56 +8,77 @@ using System.Threading.Tasks;
 
 namespace TestPipe
 {
-    internal class AnonymousPipeServer
+    class AnonymousPipeServer
+    {
+        public AnonymousPipeServerStream PipeServer { get; private set; }
+        private StreamReader sr;
+        public AnonymousPipeServer(PipeDirection direction)
+        {
+            try
+            {
+                PipeServer = new AnonymousPipeServerStream(direction, HandleInheritability.Inheritable);
+                sr = new StreamReader(PipeServer);
+                Console.WriteLine("[SERVER] Current TransmissionMode: {0}.", PipeServer.TransmissionMode);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("[SERVER] Construct error: {0}", e.Message);
+            }
+        }
+
+        public void Receive()
+        {
+            while (true)
+            {
+                string temp;
+                bool printed = false;
+                // Wait for 'sync message' from the server.
+                do
+                {
+                    temp = sr.ReadLine();
+                    if (temp == null || temp.Equals(""))
+                    {
+                        if (!printed)
+                        {
+                            Console.WriteLine("[SERVER] Wait for sync...");
+                            printed = true;
+                        }
+                    }
+                    temp = temp != null ? temp : "";
+                    Thread.Sleep(100);
+                }
+                while (!temp.StartsWith("SYNC"));
+                printed = false;
+
+                // Read the server data and echo to the console.
+                temp = sr.ReadLine();
+                if (temp != null)
+                {
+                    Console.WriteLine("[SERVER] Echo: " + temp);
+                }
+                Thread.Sleep(50);
+            }
+        }
+    }
+    class Program
     {
         static void Main()
         {
+            AnonymousPipeServer anonymousPipeServer = new AnonymousPipeServer(PipeDirection.In);
+
             Process pipeClient = new Process();
+            pipeClient.StartInfo.FileName = "E:/test_code/TestPipe/AnonymousPipeClient/bin/Debug/net6.0/AnonymousPipeClient.exe";
+            // Pass the client process a handle to the server.
+            pipeClient.StartInfo.Arguments = anonymousPipeServer.PipeServer.GetClientHandleAsString();
+            pipeClient.StartInfo.UseShellExecute = false;
+            pipeClient.Start();
 
-            pipeClient.StartInfo.FileName = "AnonymousPipeClient.exe";
-
-            using (AnonymousPipeServerStream pipeServer = new AnonymousPipeServerStream(PipeDirection.Out, HandleInheritability.Inheritable))
-            {
-                Console.WriteLine("[SERVER] Current TransmissionMode: {0}.",
-                    pipeServer.TransmissionMode);
-
-                // Pass the client process a handle to the server.
-                pipeClient.StartInfo.Arguments = pipeServer.GetClientHandleAsString();
-                pipeClient.StartInfo.UseShellExecute = false;
-                pipeClient.Start();
-
-                pipeServer.DisposeLocalCopyOfClientHandle();
-
-                Send(pipeServer);
-            }
+            anonymousPipeServer.PipeServer.DisposeLocalCopyOfClientHandle();
+            anonymousPipeServer.Receive();
 
             pipeClient.WaitForExit();
             pipeClient.Close();
             Console.WriteLine("[SERVER] Client quit. Server terminating.");
-        }
-
-        static void Send(AnonymousPipeServerStream anonymousPipeServerStream)
-        {
-            try
-            {
-                // Read user input and send that to the client process.
-                using (StreamWriter sw = new StreamWriter(anonymousPipeServerStream))
-                {
-                    sw.AutoFlush = true;
-                    // Send a 'sync message' and wait for client to receive it.
-                    sw.WriteLine("SYNC");
-                    anonymousPipeServerStream.WaitForPipeDrain();
-                    // Send the console input to the client process.
-                    Console.Write("[SERVER] Enter text: ");
-                    sw.WriteLine(Console.ReadLine());
-                }
-            }
-            // Catch the IOException that is raised if the pipe is broken
-            // or disconnected.
-            catch (IOException e)
-            {
-                Console.WriteLine("[SERVER] Error: {0}", e.Message);
-            }
         }
     }
 }

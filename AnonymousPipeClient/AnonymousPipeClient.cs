@@ -8,45 +8,56 @@ using System.Threading.Tasks;
 
 namespace TestPipe
 {
-    internal class AnonymousPipeClient
+    class AnonymousPipeClient
+    {
+        private PipeStream pipeClient;
+        private StreamWriter sw;
+        public AnonymousPipeClient(PipeDirection direction, string pipeHandleAsString)
+        {
+            try
+            {
+                pipeClient = new AnonymousPipeClientStream(direction, pipeHandleAsString);
+                sw = new StreamWriter(pipeClient);
+                sw.AutoFlush = true;
+                Console.WriteLine("[CLIENT] Current TransmissionMode: {0}.", pipeClient.TransmissionMode);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("[CLIENT] Construct error: {0}", e.Message);
+            }
+        }
+
+        public void Send()
+        {
+            try
+            {
+                // Send a 'sync message' and wait for client to receive it.
+                sw.WriteLine("SYNC");
+                sw.Flush();
+                pipeClient.WaitForPipeDrain();
+                // Send the console input to the client process.
+                Console.Write("[CLIENT] Enter text 1: ");
+                sw.WriteLine(Console.ReadLine());
+            }
+            catch (IOException e)
+            {
+                Console.WriteLine("[CLIENT] Send error: {0}", e.Message);
+            }
+        }
+    }
+
+    class Program
     {
         static void Main(string[] args)
         {
-            if (args.Length > 0)
+            AnonymousPipeClient client = new AnonymousPipeClient(PipeDirection.Out, args[0]);
+            while (true)
             {
-                using (PipeStream pipeClient = new AnonymousPipeClientStream(PipeDirection.In, args[0]))
-                {
-                    Console.WriteLine("[CLIENT] Current TransmissionMode: {0}.",
-                       pipeClient.TransmissionMode);
-
-                    Receive(pipeClient);
-                }
+                client.Send();
             }
+            
             Console.Write("[CLIENT] Press Enter to continue...");
             Console.ReadLine();
-        }
-
-        static void Receive(PipeStream pipeStream)
-        {
-            using (StreamReader sr = new StreamReader(pipeStream))
-            {
-                // Display the read text to the console
-                string temp;
-
-                // Wait for 'sync message' from the server.
-                do
-                {
-                    Console.WriteLine("[CLIENT] Wait for sync...");
-                    temp = sr.ReadLine();
-                }
-                while (!temp.StartsWith("SYNC"));
-
-                // Read the server data and echo to the console.
-                while ((temp = sr.ReadLine()) != null)
-                {
-                    Console.WriteLine("[CLIENT] Echo: " + temp);
-                }
-            }
         }
     }
 }
