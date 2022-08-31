@@ -41,8 +41,7 @@ public class PipeServer
 
     private static void ServerThread(object data)
     {
-        NamedPipeServerStream pipeServer =
-            new NamedPipeServerStream("testpipe", PipeDirection.InOut, numThreads);
+        NamedPipeServerStream pipeServer = new NamedPipeServerStream("testpipe", PipeDirection.InOut, numThreads);
 
         int threadId = Thread.CurrentThread.ManagedThreadId;
 
@@ -54,12 +53,10 @@ public class PipeServer
         {
             // Read the request from the client. Once the client has
             // written to the pipe its security token will be available.
-
             StreamString ss = new StreamString(pipeServer);
 
             // Verify our identity to the connected client using a
             // string that the client anticipates.
-
             ss.WriteString("I am the one true server!");
             string filename = ss.ReadString();
 
@@ -67,8 +64,7 @@ public class PipeServer
             ReadFileToStream fileReader = new ReadFileToStream(ss, filename);
 
             // Display the name of the user we are impersonating.
-            Console.WriteLine("Reading file: {0} on thread[{1}] as user: {2}.",
-                filename, threadId, pipeServer.GetImpersonationUserName());
+            Console.WriteLine("Reading file: {0} on thread[{1}] as user: {2}.", filename, threadId, pipeServer.GetImpersonationUserName());
             pipeServer.RunAsClient(fileReader.Start);
         }
         // Catch the IOException that is raised if the pipe is broken

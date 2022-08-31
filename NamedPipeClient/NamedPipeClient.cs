@@ -28,7 +28,7 @@ public class PipeClient
                     // The client security token is sent with the first write.
                     // Send the name of the file whose contents are returned
                     // by the server.
-                    ss.WriteString("c:\\textfile.txt");
+                    ss.WriteString($"c:/textfile{args[1]}.txt");
 
                     // Print the file to the screen.
                     Console.Write(ss.ReadString());
@@ -75,7 +75,7 @@ public class PipeClient
         for (i = 0; i < numClients; i++)
         {
             // Start 'this' program but spawn a named pipe client.
-            plist[i] = Process.Start(currentProcessName, "spawnclient");
+            plist[i] = Process.Start(currentProcessName, $"spawnclient {i+1}");
         }
         while (i > 0)
         {
