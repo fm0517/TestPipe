@@ -21,7 +21,7 @@ namespace TestPipe
         public void Run()
         {
             Console.WriteLine($"This is client-{ClientName}");
-            var pipeClient = new NamedPipeClientStream(".", "testpipe", PipeDirection.InOut, PipeOptions.None, TokenImpersonationLevel.Impersonation);
+            var pipeClient = new NamedPipeClientStream("192.168.1.3", "testpipe", PipeDirection.InOut, PipeOptions.None, TokenImpersonationLevel.Impersonation);
 
             Console.WriteLine("Connecting to server ...\n");
             pipeClient.Connect();
